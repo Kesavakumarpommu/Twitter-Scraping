@@ -5,46 +5,56 @@ import datetime
 import streamlit as st
 
 
-
 st.title(':blue[Twitter Scraping]')
-title = st.text_input('Entre your Scraping Tweet Id:' )
-st.write('The current Scraping tweets from', title)
-x=st.slider("Select Your Range of tweets 500-1500",
-            min_value=500,max_value=1500,step=50)
+st.markdown("<h1 style='text-align: right; color:gray;font-size:26px'>-by kesavakumar pommu</h1>", unsafe_allow_html=True)
+a = st.text_input('Entre your Scraping Tweet Id:' )
+st.write('The current Scraping tweets from', a)
+
+f=a
+x=st.slider("Select Your Range of tweets 10-1000",
+            min_value=10,max_value=1000,step=5)
+x=int(x)
 st.write("Tweet count:",x)
-d=st.date_input(
+b=st.date_input(
     "Tweets between : From" ,
-    datetime.date(2021, 1, 1))
+    datetime.date(2022, 11, 1))
 c=st.date_input(
     "To" ,
-    datetime.date(2023, 1, 21))
+    datetime.date(2023, 1, 31))
 
 
-st.write(x ,'tweets between',d,'to',c)
+st.write(x ,'tweets between',b,'to',c)
+
+d={'x':f,'y':b,'z':c}
 
 
-# Creating list to append tweet data to
-tweets_list = []
 
-# Using TwitterSearchScraper to scrape data and append tweets to list
-for i,tweet in enumerate(sntwitter.TwitterSearchScraper('from:{} since:{} until:{}'.format(title,d,c)).get_items()):
-    if i>5000:
-        break
-    tweets_list.append([tweet.date, tweet.id, tweet.content, tweet.user.username])
-    
-# Creating a dataframe from the tweets list above
-tweets_df = pd.DataFrame(tweets_list, columns=['Datetime', 'Tweet Id', 'Text', 'Username'])
+if st.button("Click Here"):
 
-st.table(tweets_df)
 
-client = MongoClient('localhost',27017)
-db=client.test_database
-collection=db.test_collection
 
-tweets_df.reset_index(inplace=True)
-data_dict=tweets_df.to_dict("records")
-data_dict
-collection.insert_many(data_dict)
-collection.find()
 
-st.table(tweets_df)
+    tweets_list = []
+
+    for i, tweet in enumerate(sntwitter.TwitterSearchScraper('{x} since:{y} until:{z}'.format_map(d)).get_items()):
+        if i > x:
+            break
+        tweets_list.append([tweet.date, tweet.id, tweet.content, tweet.user.username])
+
+    tweets_df = pd.DataFrame(tweets_list, columns=['Datetime', 'Tweet Id', 'Text', 'Username'])
+
+    st.table(tweets_df)
+
+
+
+
+# client = MongoClient('localhost',27017)
+# db=client.test_database
+# collection=db.test_collection
+#
+# tweets_df.reset_index(inplace=True)
+# data_dict=tweets_df.to_dict("records")
+#
+# collection.insert_many(data_dict)
+# print(collection)
+#
