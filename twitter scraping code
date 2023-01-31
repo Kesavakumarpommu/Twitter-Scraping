@@ -46,7 +46,24 @@ if st.button("Click Here"):
     st.table(tweets_df)
 
 
+    @st.cache
+    def convert_df(df):
+        return df.to_csv().encode('utf-8')
 
+
+    csv = convert_df(tweets_df)
+
+    st.download_button(
+
+        label="Download data as CSV",
+
+        data=csv,
+
+        file_name='sample_df.csv',
+
+        mime='text/csv',
+
+    )
 
 # client = MongoClient('localhost',27017)
 # db=client.test_database
@@ -57,4 +74,4 @@ if st.button("Click Here"):
 #
 # collection.insert_many(data_dict)
 # print(collection)
-#
+
